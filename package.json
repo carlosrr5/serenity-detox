@@ -1,0 +1,53 @@
+{
+  "name": "serenity-detox",
+  "version": "0.1.2",
+  "description": "Screenplay pattern for Detox automation",
+  "private": true,
+  "author": {
+    "name": "Carlos Robles",
+    "email": "carlosrr5@hotmail.com"
+  },
+  "license": "Apache-2.0",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "compile": "tsc --project tsconfig.json",
+    "lint": "tsc --noEmit && eslint ./src/**/*.ts",
+    "clean": "rm serenity-detox*.tgz & rm -rf lib",
+    "build": "npm run clean && npm run compile && npm version patch && npm pack",
+    "typedoc": "typedoc --plugin typedoc-plugin-markdown --out docs src/**/*.ts"
+  },
+  "peerDependencies": {
+    "@serenity-js/core": "2.33.4"
+  },
+  "dependencies": {
+    "@serenity-js/core": "2.33.4",
+    "detox": "^19.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.30",
+    "@typescript-eslint/eslint-plugin": "^5.22.0",
+    "@typescript-eslint/parser": "^5.22.0",
+    "eslint": "^8.14.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "eslint-plugin-unicorn": "^42.0.0",
+    "eslint-plugin-unused-imports": "^2.0.0",
+    "husky": "^8.0.1",
+    "lint-staged": "^12.4.2",
+    "typescript": "^4.6.4"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npx tsc --noEmit && lint-staged"
+    }
+  },
+  "lint-staged": {
+    "./src/*.{ts,tsx}": [
+      "npx eslint --fix"
+    ]
+  }
+}
