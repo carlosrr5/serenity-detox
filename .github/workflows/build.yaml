@@ -1,0 +1,39 @@
+name: Release Pipeline
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+
+  build:
+    if:       "!contains(github.event.head_commit.message, 'ci skip')"
+    runs-on:  ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Setup Node 14.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14.x
+
+      - name: Install NPM dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Build
+        run: |
+          git config --global user.name $GITHUB_REPOSITORY_OWNER
+          git config --global user.email $GITHUB_REPOSITORY_OWNER@users.noreply.github.com
+          npm run build
+
+      - uses: actions/upload-artifact@v3
+        with:
+          retention-days: 3
+          path: serenity-detox-*.tgz
+
+      - name: Commit New Version
+        run: |
+          git push origin HEAD:main

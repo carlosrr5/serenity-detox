@@ -1,0 +1,17 @@
+# Node
+node_modules/
+
+# Visual studio
+.vscode
+.vs
+.history
+
+# Debug Files
+*.log
+
+# Bundle Folder
+lib/
+*.tgz
+
+#website
+website/
