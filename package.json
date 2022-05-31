@@ -1,6 +1,6 @@
 {
   "name": "serenity-detox",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Screenplay pattern for Detox automation",
   "private": true,
   "author": {
