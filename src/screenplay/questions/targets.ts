@@ -1,6 +1,7 @@
-import { AnswersQuestions, Question, UsesAbilities } from '@serenity-js/core';
+import { Answerable, AnswersQuestions, MetaQuestion, Question, UsesAbilities } from '@serenity-js/core';
 
 import { Locator } from './locators';
+import { NestedTargetBuilder } from './NestedTargetBuilder';
 import { TargetBuilder } from './TargetBuilder';
 
 /**
@@ -59,11 +60,19 @@ export class Target {
      *
      * @returns {TargetBuilder<TargetElement>}
      */
-    static the(description: string): TargetBuilder<TargetElement> {
+    static the(description: string): TargetBuilder<TargetElement> & NestedTargetBuilder<TargetNestedElement> {
         return {
             located(locator: Locator): TargetElement {
                 return new TargetElement(`the ${ description }`, locator);
             },
+
+            of(parent: TargetElement) {
+                return {
+                    located(locator: Locator): TargetNestedElement {
+                        return new TargetNestedElement(parent, new TargetElement(description, locator));
+                    }
+                }
+            }
         }
     }
 }
@@ -79,16 +88,48 @@ export class Target {
  */
 export class TargetElement
     extends Question<Detox.NativeElement>
+    implements MetaQuestion<Answerable<Detox.NativeElement>, Detox.NativeElement>
 {
     constructor(
         description: string,
-        private readonly locator: Locator,
+        public readonly locator: Locator,
     ) {
         super(description);
     }
 
+    of(parent: TargetElement): TargetNestedElement {
+        return new TargetNestedElement(parent, this);
+    }
+
     answeredBy(actor: AnswersQuestions & UsesAbilities): Detox.NativeElement {
         return this.locator.firstMatching()
+            .describedAs(this.subject)
+            .answeredBy(actor);
+    }
+}
+
+/**
+ * @desc
+ *  You probably don't want to use this class directly. See {@link Target} instead.
+ *
+ * @extends {@serenity-js/core/lib/screenplay~Question}
+ *
+ * @see {@link Target}
+ */
+export class TargetNestedElement
+    extends Question<Detox.NativeElement>
+{
+    constructor(
+        private readonly parent: TargetElement,
+        private readonly child: TargetElement,
+    ) {
+        super(`${ child } of ${ parent }`);
+    }
+
+    answeredBy(actor: AnswersQuestions & UsesAbilities): Detox.NativeElement {
+        const locator = this.child.locator.withAncestor(this.parent.locator);
+
+        return locator.firstMatching()
             .describedAs(this.subject)
             .answeredBy(actor);
     }
