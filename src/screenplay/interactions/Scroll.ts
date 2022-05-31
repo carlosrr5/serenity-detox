@@ -73,7 +73,7 @@ class ScrollOn extends DetoxElementInteraction {
      *  The element to be scrolled to
      */
     constructor(private readonly baseElement: Answerable<Detox.NativeElement>, private readonly direction: 'up' | 'down', private readonly target?: Answerable<Detox.NativeElement>) {
-        super(formatted`#actor scrolls${target && ` to ${target}` } on ${baseElement}`);
+        super(formatted`#actor scrolls${target ? ` to ${target}` : ''} on ${baseElement}`);
     }
 
     /**

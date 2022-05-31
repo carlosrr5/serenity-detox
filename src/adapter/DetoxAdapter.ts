@@ -2,6 +2,18 @@ import { actorCalled, serenity } from '@serenity-js/core';
 import * as DetoxInstance from 'detox';
 const { afterEach, beforeEach, cleanup, init } = DetoxInstance;
 
+enum CucumberStatus {
+    UNKNOWN = 'UNKNOWN',
+    PASSED = 'PASSED',
+    SKIPPED = 'SKIPPED',
+    PENDING = 'PENDING',
+    UNDEFINED = 'UNDEFINED',
+    AMBIGUOUS = 'AMBIGUOUS',
+    FAILED = 'FAILED',
+}
+
+type Status = keyof typeof CucumberStatus;
+
 interface TestSummary {
     /**
      * Name of the current test, e.g., for:
@@ -20,7 +32,7 @@ interface TestSummary {
     /**
      * Status of the current test. Free-form strings are not allowed.
      */
-    status: 'running' | 'passed' | 'failed';
+    status?: Status;
     /**
      * Clarifies the reason for why the test has failed.
      * Expected to coincide only with status: 'failed'.
@@ -89,12 +101,31 @@ export class DetoxAdapter {
         return await init(ConfigOverride, { reuse: false });
     }
 
-    static beforeEach = (context: TestSummary): Promise<void> => beforeEach(context);
+    static beforeEach = (context: TestSummary): Promise<void> => beforeEach({
+        ...context,
+        status: this._mapStatus(context.status ?? CucumberStatus.UNKNOWN, false),
+    });
 
     static afterEach = async (context: TestSummary): Promise<void> => {
         await serenity.waitForNextCue();
-        await afterEach(context);
+        await afterEach({
+            ...context,
+            status: this._mapStatus(context.status ?? CucumberStatus.UNKNOWN, true),
+        });
     }
+
+    private static _mapStatus = (status: Status, isAfterTest: boolean) => {
+        switch (status) {
+            case CucumberStatus.PASSED:
+                return 'passed';
+            case CucumberStatus.FAILED:
+                return 'failed';
+            case CucumberStatus.PENDING:
+                return 'running';
+            default:
+                return isAfterTest ? 'failed' : 'running';
+        }
+    };
 }
 
 export default DetoxInstance;

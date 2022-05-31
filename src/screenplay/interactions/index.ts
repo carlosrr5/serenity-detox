@@ -3,6 +3,7 @@ export * from './Click';
 export * from './Device';
 export * from './DoubleClick';
 export * from './Enter';
+export * from './Insert';
 export * from './Press';
 export * from './Scroll';
 export * from './Wait';

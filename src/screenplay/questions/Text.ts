@@ -93,8 +93,6 @@ class TextOfSingleElement
     }
 
     async answeredBy(actor: AnswersQuestions & UsesAbilities): Promise<string> {
-        actor.answer(this.element)
-            .then(element => element.getAttributes())
         const element = await actor.answer(this.element);
         const attributes = <Detox.ElementAttributes>(await element.getAttributes());
         const elementText = attributes.text;
