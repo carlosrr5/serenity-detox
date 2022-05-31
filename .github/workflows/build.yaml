@@ -39,9 +39,14 @@ jobs:
           path: serenity-detox.tgz
 
       - name: Push New Version
-        run: git push
+        run: |
+          git push
+          git push origin --tags
+
+      - uses: nyaa8/package-version@v1
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
+          tag_name: v${{ env.PACKAGE_VERSION }}
           files: serenity-detox.tgz
