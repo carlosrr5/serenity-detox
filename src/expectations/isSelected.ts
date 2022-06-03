@@ -8,14 +8,14 @@ import { ElementExpectation } from './ElementExpectation';
  *  be on/checked or off/unchecked. As a reference, in react-native,
  *  this is the equivalent switch component.
  *
- * @returns {@serenity-js/core/lib/screenplay/questions~Expectation<boolean, Detox.IndexableNativeElement>}
+ * @returns {@serenity-js/core/lib/screenplay/questions~Expectation<boolean, Detox.NativeElement>}
  *
  * @see https://wix.github.io/Detox/docs/api/expect#tohavetogglevaluevalue
  * @see {@link @serenity-js/assertions~Ensure}
  * @see {@link @serenity-js/core/lib/screenplay/questions~Check}
  * @see {@link Wait}
  */
-export function isSelected(): Expectation<boolean, Detox.IndexableNativeElement> {
+export function isSelected(): Expectation<boolean, Detox.NativeElement> {
     return ElementExpectation.forElementTo('become selected', async (actual) => {
         try {
             await actual.toHaveToggleValue(true);

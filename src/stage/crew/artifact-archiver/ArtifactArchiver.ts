@@ -160,7 +160,7 @@ export class ArtifactArchiver implements StageCrewMember {
     private archive(relativePath: Path, contents: string, encoding: WriteFileOptions, announce: (absolutePath: Path) => void): void {
         const id = CorrelationId.create();
 
-        this.stage.announce(new AsyncOperationAttempted(
+        this.stage?.announce(new AsyncOperationAttempted(
             new Description(`[${ this.constructor.name }] Saving '${ relativePath.value }'...`),
             id,
         ));
@@ -169,20 +169,20 @@ export class ArtifactArchiver implements StageCrewMember {
             .then(absolutePath => {
                 announce(relativePath);
 
-                this.stage.announce(new AsyncOperationCompleted(
+                this.stage?.announce(new AsyncOperationCompleted(
                     new Description(`[${ this.constructor.name }] Saved '${ absolutePath.value }'`),
                     id,
                 ));
             })
             .catch(error => {
-                this.stage.announce(new AsyncOperationFailed(error, id));
+                this.stage?.announce(new AsyncOperationFailed(error, id));
             });
     }
 
     private archivisationAnnouncement(event: ArtifactGenerated | ActivityRelatedArtifactGenerated, relativePathToArtifact: Path) {
         return (absolutePath: Path) => {
             if (event instanceof ActivityRelatedArtifactGenerated) {
-                this.stage.announce(new ActivityRelatedArtifactArchived(
+                this.stage?.announce(new ActivityRelatedArtifactArchived(
                     event.sceneId,
                     event.activityId,
                     event.name,
@@ -190,7 +190,7 @@ export class ArtifactArchiver implements StageCrewMember {
                     relativePathToArtifact,
                 ));
             } else if (event instanceof ArtifactGenerated) {
-                this.stage.announce(new ArtifactArchived(
+                this.stage?.announce(new ArtifactArchived(
                     event.sceneId,
                     event.name,
                     event.artifact.constructor as ArtifactType,

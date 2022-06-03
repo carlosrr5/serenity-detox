@@ -1,4 +1,4 @@
-import { Answerable, AnswersQuestions, Question, UsesAbilities } from '@serenity-js/core';
+import { Answerable, AnswersQuestions, LogicError, Question, UsesAbilities } from '@serenity-js/core';
 
 /**
  * @desc
@@ -96,6 +96,9 @@ class TextOfSingleElement
         const element = await actor.answer(this.element);
         const attributes = <Detox.ElementAttributes>(await element.getAttributes());
         const elementText = attributes.text;
+        if (!elementText) {
+            throw new LogicError('Text not found.');
+        }
         return elementText;
     }
 }
@@ -110,6 +113,6 @@ class TextOfMultipleElements
     async answeredBy(actor: AnswersQuestions & UsesAbilities): Promise<string[]> {
         const indexableElements = await actor.answer(this.elements);
         const { elements } = <{elements: Detox.ElementAttributes[]}>(await indexableElements.getAttributes());
-        return Promise.all(elements.map(answer => answer.text));
+        return Promise.all(elements.map(answer => answer.text ?? ''));
     }
 }

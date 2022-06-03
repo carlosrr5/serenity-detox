@@ -7,14 +7,14 @@ import { ElementExpectation } from './ElementExpectation';
  *  Expectation that the element is present in the View tree.
  *  Please note that this does not necessarily mean that the element is visible.
  *
- * @returns {@serenity-js/core/lib/screenplay/questions~Expectation<boolean, Element<'async'>>}
+ * @returns {@serenity-js/core/lib/screenplay/questions~Expectation<boolean, Detox.NativeElement>}
  *
  * @see https://wix.github.io/Detox/docs/api/expect#toexist
  * @see {@link @serenity-js/assertions~Ensure}
  * @see {@link @serenity-js/core/lib/screenplay/questions~Check}
  * @see {@link Wait}
  */
-export function isPresent(): Expectation<boolean, Detox.IndexableNativeElement> {
+export function isPresent(): Expectation<boolean, Detox.NativeElement> {
     return ElementExpectation.forElementTo('become present', async (actual) => {
         try {
             await actual.toExist();

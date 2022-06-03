@@ -103,14 +103,14 @@ export class DetoxAdapter {
 
     static beforeEach = (context: TestSummary): Promise<void> => beforeEach({
         ...context,
-        status: this._mapStatus(context.status ?? CucumberStatus.UNKNOWN, false),
+        status: DetoxAdapter._mapStatus(context.status ?? CucumberStatus.UNKNOWN, false),
     });
 
     static afterEach = async (context: TestSummary): Promise<void> => {
         await serenity.waitForNextCue();
         await afterEach({
             ...context,
-            status: this._mapStatus(context.status ?? CucumberStatus.UNKNOWN, true),
+            status: DetoxAdapter._mapStatus(context.status ?? CucumberStatus.UNKNOWN, true),
         });
     }
 

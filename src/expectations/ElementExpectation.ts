@@ -5,11 +5,11 @@ import { UseTheDevice } from '../screenplay';
 /**
  * @access private
  */
-export class ElementExpectation extends Expectation<any, Detox.IndexableNativeElement> {
+export class ElementExpectation extends Expectation<any, Detox.NativeElement> {
     static forElementTo(
         message: string,
         fn: (actual: Detox.Expect) => Promise<boolean>,
-    ): Expectation<boolean, Detox.IndexableNativeElement> {
+    ): Expectation<boolean, Detox.NativeElement> {
         return new ElementExpectation(message, fn);
     }
 
@@ -18,9 +18,9 @@ export class ElementExpectation extends Expectation<any, Detox.IndexableNativeEl
     }
 
     answeredBy(): (
-        actual: Detox.IndexableNativeElement,
-    ) => Promise<ExpectationOutcome<any, Detox.IndexableNativeElement>> {
-        return async (actual: Detox.IndexableNativeElement) => {
+        actual: Detox.NativeElement,
+    ) => Promise<ExpectationOutcome<any, Detox.NativeElement>> {
+        return async (actual: Detox.NativeElement) => {
             try {
                 const outcome = await this.fn(UseTheDevice.expect(actual))
                 return outcome
